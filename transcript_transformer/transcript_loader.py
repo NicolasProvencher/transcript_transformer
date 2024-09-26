@@ -289,15 +289,22 @@ class h5pyDataModule(pl.LightningDataModule):
             assert len(self.te_idx) > 0, "No transcripts in test data"
 
     def prepare_sets(self, mask, group_conds):
-        mask_set = []
-        len_set = []
-        for cond_mask in group_conds:
-            mask_set.append(np.logical_and(cond_mask, mask))
-            len_set.append(self.transcript_lens[mask_set[-1]])
-        mask_all = np.hstack(mask_set)
-        lens = np.hstack(len_set)
-        idxs = np.where(mask_all)[0]
-        sort_idxs = np.argsort(lens)
+        if group_conds:        
+            mask_set = []
+            len_set = []
+            for cond_mask in group_conds:
+                mask_set.append(np.logical_and(cond_mask, mask))
+                len_set.append(self.transcript_lens[mask_set[-1]])
+            mask_all = np.hstack(mask_set)
+            lens = np.hstack(len_set)
+            idxs = np.where(mask_all)[0]
+            sort_idxs = np.argsort(lens)
+        else:
+            print("no group conds, this is probably running in tis mode not ribotie")
+            mask_all = mask
+            lens = self.transcript_lens[mask_all]
+            idxs = np.where(mask_all)[0]
+            sort_idxs = np.argsort(lens)
 
         return idxs[sort_idxs], lens[sort_idxs], len(mask)
 
