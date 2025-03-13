@@ -213,7 +213,10 @@ def main():
         if args.pretrain:
             args.ribo_ids = [[f"pretrain_f{i}"] for i, fold in args.folds.items()]
         for ribo_set in args.ribo_ids:
-            ribo_set_str = "&".join(ribo_set)
+            if (args.ribo_study_ids is not None):
+                ribo_set_str = "&".join(args.ribo_study_ids)
+            else:
+                ribo_set_str = "&".join(ribo_set)
             out = np.load(f"{args.out_prefix}{ribo_set_str}.npy", allow_pickle=True)
             out_prefix = f"{args.out_prefix}{ribo_set_str}"
             df = construct_output_table(
