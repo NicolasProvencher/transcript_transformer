@@ -498,15 +498,30 @@ class Parser(argparse.ArgumentParser):
 
         # ribo takes precedence over ribo_paths
         if args.use_ribo:
-            if (args.samples is not None) and (len(args.samples) > 0):
-                args.ribo_ids = [r if type(r) == list else [r] for r in args.samples]
-            else:
-                args.ribo_ids = [[r] for r in args.ribo_paths.keys()]
-            flat_ids = sum(args.ribo_ids, [])
-            args.ribo_paths = {k:v for k,v in args.ribo_paths.items() if k in flat_ids}
-            assert len(np.unique(flat_ids)) == len(
-                flat_ids
-            ), "ribo_id is used multiple times"
+            if (args.samples is not None) and isinstance(arg.samples, list):
+                if (args.samples is not None) and (len(args.samples) > 0):
+                    args.ribo_ids = [r if type(r) == list else [r] for r in args.samples]
+                else:
+                    args.ribo_ids = [[r] for r in args.ribo_paths.keys()]
+                flat_ids = sum(args.ribo_ids, [])
+                args.ribo_paths = {k:v for k,v in args.ribo_paths.items() if k in flat_ids}
+                assert len(np.unique(flat_ids)) == len(
+                    flat_ids
+                ), "ribo_id is used multiple times"
+            elif (args.samples is not None) and isinstance(arg.samples, dict):
+                args.ribo_study_ids=[]
+                args.ribo_ids=[]
+                for key, value in arg.sample.items:
+                    args.ribo_study_ids.append(key)
+                    if len(args.samples) > 0:
+                        args.ribo_ids.extend([r if type(r) == list else [r] for r in value])
+                    else:
+                        args.ribo_ids.extend([[r] for r in args.ribo_paths.keys()])
+                flat_ids = sum(args.ribo_ids, [])
+                args.ribo_paths = {k:v for k,v in args.ribo_paths.items() if k in flat_ids}
+                assert len(np.unique(flat_ids)) == len(
+                    flat_ids
+                ), "ribo_id is used multiple times"
         else:
             args.ribo_ids = []
 
