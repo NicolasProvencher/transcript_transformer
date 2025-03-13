@@ -201,12 +201,11 @@ def main():
                 print(f"--> Predicting samples for {ribo_set_str}...")
                 args_set.out_prefix = f"{args.out_prefix}{ribo_set_str}_f{j}"
                 predict(args_set, trainer=trainer, model=model, postprocess=False)
-                ribo_set_str = "&".join(ribo_set)
             if (args.ribo_study_ids is not None):
                 ribo_set_str = "&".join(args.ribo_study_ids)
-                prefix = f"{args.out_prefix}{ribo_set_str}"
             else:
-                prefix = f"{args.out_prefix}{ribo_set_str}"
+                ribo_set_str = "&".join(ribo_set)
+            prefix = f"{args.out_prefix}{ribo_set_str}"
             merge_outputs(prefix, args.pretrained_model["folds"].keys())
 
     if not args.data:
