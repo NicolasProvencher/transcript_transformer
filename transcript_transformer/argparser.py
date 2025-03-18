@@ -498,7 +498,7 @@ class Parser(argparse.ArgumentParser):
 
         # ribo takes precedence over ribo_paths
         if args.use_ribo:
-            if (args.samples is not None) and isinstance(arg.samples, list):
+            if (args.samples is not None) and isinstance(args.samples, list):
                 if (args.samples is not None) and (len(args.samples) > 0):
                     args.ribo_ids = [r if type(r) == list else [r] for r in args.samples]
                 else:
@@ -508,10 +508,10 @@ class Parser(argparse.ArgumentParser):
                 assert len(np.unique(flat_ids)) == len(
                     flat_ids
                 ), "ribo_id is used multiple times"
-            elif (args.samples is not None) and isinstance(arg.samples, dict):
+            elif (args.samples is not None) and isinstance(args.samples, dict):
                 args.ribo_study_ids=[]
                 args.ribo_ids=[]
-                for key, value in arg.sample.items:
+                for key, value in args.sample.items:
                     args.ribo_study_ids.append(key)
                     if len(args.samples) > 0:
                         args.ribo_ids.extend([r if type(r) == list else [r] for r in value])
