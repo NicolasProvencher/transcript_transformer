@@ -511,7 +511,7 @@ class Parser(argparse.ArgumentParser):
             elif (args.samples is not None) and isinstance(args.samples, dict):
                 args.ribo_study_ids=[]
                 args.ribo_ids=[]
-                for key, value in args.samples.items:
+                for key, value in args.samples.items():
                     args.ribo_study_ids.append(key)
                     if len(args.samples) > 0:
                         args.ribo_ids.extend([r if type(r) == list else [r] for r in value])
