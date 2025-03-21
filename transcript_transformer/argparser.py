@@ -501,8 +501,7 @@ class Parser(argparse.ArgumentParser):
             if (args.samples is not None) and isinstance(args.samples, list):
                 if (args.samples is not None) and (len(args.samples) > 0):
                     args.ribo_ids = [r if type(r) == list else [r] for r in args.samples]
-                else:
-                    args.ribo_ids = [[r] for r in args.ribo_paths.keys()]
+
                 flat_ids = sum(args.ribo_ids, [])
                 args.ribo_paths = {k:v for k,v in args.ribo_paths.items() if k in flat_ids}
                 assert len(np.unique(flat_ids)) == len(
@@ -512,11 +511,15 @@ class Parser(argparse.ArgumentParser):
                 args.ribo_study_ids=[]
                 args.ribo_ids=[]
                 for key, value in args.samples.items():
+                    #in case where args.sample is given as a dict makes sure 
+                    assert isinstance(value, str) or (
+                        isinstance(value, list) and all(isinstance(x, str) for x in value)
+                    ), "Sample when given a study id should be a string or file id or list of str of file id, recheck your yaml to make sure it fit the documentation"
                     args.ribo_study_ids.append(key)
                     if len(args.samples) > 0:
                         args.ribo_ids.extend([r if type(r) == list else [r] for r in value])
-                    else:
-                        args.ribo_ids.extend([[r] for r in args.ribo_paths.keys()])
+            else:
+                args.ribo_ids = [[r] for r in args.ribo_paths.keys()]
                 flat_ids = sum(args.ribo_ids, [])
                 args.ribo_paths = {k:v for k,v in args.ribo_paths.items() if k in flat_ids}
                 assert len(np.unique(flat_ids)) == len(
