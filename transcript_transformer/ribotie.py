@@ -187,7 +187,10 @@ def main():
             args_set = deepcopy(args)
             args_set.ribo_ids = [ribo_set]
             args_set.cond["grouped"] = [args.cond["grouped"][i]]
-            ribo_set_str = "&".join(ribo_set)
+            if (args.ribo_study_ids is not None): #modify name schema when a dict is given instead of list in yml
+                ribo_set_str = args.ribo_study_ids[i]
+            else:
+                ribo_set_str = "&".join(ribo_set)
             for j, fold in args_set.pretrained_model["folds"].items():
                 args_set.__dict__.update(fold)
                 args_set.transfer_checkpoint = os.path.join(
@@ -201,8 +204,9 @@ def main():
                 print(f"--> Predicting samples for {ribo_set_str}...")
                 args_set.out_prefix = f"{args.out_prefix}{ribo_set_str}_f{j}"
                 predict(args_set, trainer=trainer, model=model, postprocess=False)
-            if (args.ribo_study_ids is not None):
-                ribo_set_str = "&".join(args.ribo_study_ids)
+            #idk why this line is duplicated after fold training but I modified both as to not break things
+            if (args.ribo_study_ids is not None):#modify name schema when a dict is given instead of list in yml
+                ribo_set_str = args.ribo_study_ids[i]
             else:
                 ribo_set_str = "&".join(ribo_set)
             prefix = f"{args.out_prefix}{ribo_set_str}"
